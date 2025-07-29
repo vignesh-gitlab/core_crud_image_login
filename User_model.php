@@ -23,11 +23,13 @@ function insertRowData($data)
     $stmt->bind_param('ssss', $data['name'], $data['email'], $data['password'], $data['image']);
     $result = $stmt->execute();
     if ($result) {
-        $stmt1 = $conn->prepare('insert into login(username,password) values(?,?)');
-        $stmt1->bind_param('ss', $data['email'], $data['password']);
+        $userid = $conn->insert_id;
+        $stmt1 = $conn->prepare('insert into login(userid,username,password) values(?,?,?)');
+        $stmt1->bind_param('iss', $userid, $data['email'], $data['password']);
         $stmt1->execute();
+        return true;
     }
-    return true;
+    return false;
 }
 
 function checkEmail($email)
